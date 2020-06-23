@@ -48,8 +48,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
             Observer<List<MemosDTO>> { memos -> // refresh list
                 listMemo.clear()
                 listMemo.addAll(memos)
-                memoAdapter.notifyItemInserted(listMemo.size - 1)
-                recyclerView.smoothScrollToPosition(listMemo.size - 1)
+
+                if (listMemo.size > 0) {
+                    memoAdapter.notifyItemInserted(listMemo.size - 1)
+                    recyclerView.smoothScrollToPosition(listMemo.size - 1)
+                }
+                
             })
 
         // get recycler view
