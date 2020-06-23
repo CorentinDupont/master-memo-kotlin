@@ -1,13 +1,16 @@
 package com.example.mastermemoappkotlin.adapters
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mastermemoappkotlin.Models.AppDatabaseHelper
 import com.example.mastermemoappkotlin.Models.DTO.MemosDTO
 import com.example.mastermemoappkotlin.R
+import com.example.mastermemoappkotlin.repositories.MainViewModel
 import kotlinx.android.synthetic.main.item_memo.view.*
 import java.util.*
 
@@ -60,6 +63,7 @@ class MemoAdapter(
     // Called one time on item deletion
     fun onItemDismiss(position: Int) {
         if (position > -1) {
+            onMemoListener.onMemoRemoved(position, listMemo[position])
             listMemo.removeAt(position)
             notifyItemRemoved(position)
         }
@@ -100,6 +104,7 @@ class MemoAdapter(
 
     interface OnMemoListener {
         fun onMemoClick(position: Int, memo: MemosDTO)
+        fun onMemoRemoved(position: Int, memo: MemosDTO)
     }
 
 }

@@ -11,8 +11,10 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mastermemoappkotlin.ItemTouchHelpers.MemoItemTouchHelperCallback
 import com.example.mastermemoappkotlin.Models.AppDatabaseHelper
 import com.example.mastermemoappkotlin.Models.DTO.MemosDTO
 import com.example.mastermemoappkotlin.adapters.MemoAdapter
@@ -64,6 +66,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
         memoAdapter = MemoAdapter(listMemo, this)
         recyclerView.adapter = memoAdapter
 
+        // add item touch helper
+
+        // add item touch helper
+        val itemTouchHelper = ItemTouchHelper(
+            MemoItemTouchHelperCallback(memoAdapter)
+        )
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
         // handle adding memos
         val addMemoButton = findViewById<Button>(R.id.memo_ok_button)
         addMemoButton.setOnClickListener(this)
@@ -85,6 +95,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
 
     override fun onMemoClick(position: Int, memo: MemosDTO) {
         showMemoDetails(memo)
+    }
+
+    override fun onMemoRemoved(position: Int, memo: MemosDTO) {
+        AppDatabaseHelper.getDatabase(this).memosDAO().delete(memo)
+        //mainViewModel.loadMemosList(this)
     }
 
     /**
