@@ -1,6 +1,8 @@
 package com.example.mastermemoappkotlin
 
 import android.content.ClipData.Item
+import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -92,20 +94,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
      */
     private fun showMemoDetails(memo: MemosDTO) {
         Log.i("MainActivity", memo.text)
-        /*if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             // create fragment
             val fragment = MemoDetailFragment()
             val bundle = Bundle()
-            bundle.putString(MemoDetailFragment.MEMO_TEXT_PARAM, memo.getText())
-            fragment.setArguments(bundle)
+            bundle.putString(MemoDetailFragment.MEMO_TEXT_PARAM, memo.text)
+            fragment.arguments = bundle
 
             // display fragment
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_memo_detail_frame_layout, fragment).commit()
         } else {
             val intent = Intent(this, MemoDetailActivity::class.java)
-            intent.putExtra(MemoDetailFragment.MEMO_TEXT_PARAM, memo.getText())
+            intent.putExtra(MemoDetailFragment.MEMO_TEXT_PARAM, memo.text)
             startActivity(intent)
-        }*/
+        }
     }
 }
