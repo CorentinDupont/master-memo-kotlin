@@ -1,21 +1,27 @@
 package com.example.mastermemoappkotlin
 
+import android.content.ClipData.Item
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mastermemoappkotlin.Models.AppDatabaseHelper
 import com.example.mastermemoappkotlin.Models.DTO.MemosDTO
 import com.example.mastermemoappkotlin.adapters.MemoAdapter
+import com.example.mastermemoappkotlin.repositories.MainRepository
+import com.example.mastermemoappkotlin.repositories.MainViewModel
+
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMemoListener  {
 
     // memo list
-    lateinit var listMemo: MutableList<MemosDTO>
+    private var listMemo: MutableList<MemosDTO> = ArrayList()
 
     // memo list adapter
     lateinit var memoAdapter: MemoAdapter
@@ -23,9 +29,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
     // memo recycler view
     lateinit var recyclerView: RecyclerView
 
+    // ViewModel :
+    lateinit var mainViewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // View Model Implementation
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        mainViewModel.init(MainRepository())
+        mainViewModel.loadMemosList(this)
+        mainViewModel.liveDataMemos?.observe(this,
+            Observer<List<MemosDTO>> { memos -> // refresh list
+                listMemo.clear()
+                listMemo.addAll(memos)
+                memoAdapter.notifyItemInserted(listMemo.size - 1)
+                recyclerView.smoothScrollToPosition(listMemo.size - 1)
+            })
 
         // get recycler view
         recyclerView = findViewById(R.id.memo_rv)
@@ -36,9 +57,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
         recyclerView.layoutManager = layoutManager
-
-        // get memos from database
-        listMemo = AppDatabaseHelper.getDatabase(this).memosDAO().getMemosList().toMutableList()
 
         // create and set recycler view adapter
         memoAdapter = MemoAdapter(listMemo, this)
@@ -58,15 +76,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
             val memoET = findViewById<EditText>(R.id.memo_text_et)
             val memo = MemosDTO(memoET.text.toString())
             AppDatabaseHelper.getDatabase(this).memosDAO().insert(memo)
+            mainViewModel.loadMemosList(this)
 
-            // refresh list
-            listMemo.clear()
-            val newMemoList: List<MemosDTO> =
-                AppDatabaseHelper.getDatabase(this).memosDAO().getMemosList()
-            listMemo.addAll(newMemoList)
-            //memoAdapter.notifyDataSetChanged()
-            memoAdapter.notifyItemInserted(listMemo.size - 1)
-            recyclerView.smoothScrollToPosition(listMemo.size - 1)
         }
     }
 
