@@ -17,5 +17,4 @@ class MemosDTO {
     constructor(text: String) {
         this.text = text;
     }
-
 }
