@@ -6,7 +6,6 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
 
-
     defaultConfig {
         applicationId "com.example.mastermemoappkotlin"
         minSdkVersion 16
@@ -53,6 +52,11 @@ dependencies {
     // MVVM Architecture dependencies
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
+
+    // Dependencies injection
+    implementation 'com.google.dagger:dagger:2.26'
+    kapt 'com.google.dagger:dagger-compiler:2.26'
+    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
     // Test dependencies
     testImplementation 'junit:junit:4.12'
