@@ -1,9 +1,9 @@
 package com.example.mastermemoappkotlin
 
-import android.content.ClipData.Item
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -94,7 +94,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MemoAdapter.OnMe
      */
     private fun showMemoDetails(memo: MemosDTO) {
         Log.i("MainActivity", memo.text)
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        val dpWidth = displayMetrics.widthPixels / displayMetrics.density
+        if (
+            resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            && dpWidth >= 600
+        ) {
             // create fragment
             val fragment = MemoDetailFragment()
             val bundle = Bundle()
